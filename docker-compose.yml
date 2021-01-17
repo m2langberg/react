@@ -1,0 +1,107 @@
+version: '3.7'
+
+services:
+
+    mysql:
+      image: mysql:8.0
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      volumes:
+        - database:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=secret
+        - MYSQL_DATABASE=react
+      security_opt:
+        - seccomp:unconfined
+      networks:
+        - network
+      logging:
+        options:
+          max-size: "100k"
+          max-file: "2"
+
+    frontend:
+      image: node
+      working_dir: /usr/src/app
+      command: yarn start
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+        - ELECTRON_GET_USE_PROXY=true
+        - GLOBAL_AGENT_HTTPS_PROXY=http://hgweb2:8888
+      volumes:
+        - ./frontend/app:/usr/src/app
+        - node_modules:/usr/src/app/node_modules
+      stdin_open: true
+      networks:
+        - network
+      depends_on:
+        - backend
+
+    backend:
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+        args:
+          - UID=${UID}
+          - GID=${GID}
+          - GROUP=${GROUP}
+          - USER=${USER}
+      logging:
+        options:
+          max-size: "100k"
+          max-file: "2"
+      environment:
+        - DEBUG=True
+      entrypoint: python manage.py runserver 0:5000
+      user: '$UID:$GID'
+      volumes:
+        - ./backend/src:/opt/code
+      networks:
+        - network
+      depends_on:
+        - mysql
+    
+    proxy:
+      build:
+        context: ./proxy
+        dockerfile: Dockerfile
+      restart: always
+      networks:
+        - network
+      ports:
+        - 8080:8000
+      depends_on:
+        - frontend
+        - backend
+
+    editor:
+      build:
+        context: ./editor
+        dockerfile: Dockerfile
+        args:
+          - UID=${UID}
+          - GID=${GID}
+          - GROUP=${GROUP}
+          - USER=${USER}
+      user: '$UID:$GID'
+      working_dir: /usr/src/
+      environment:
+        - DISPLAY=${DISPLAY}
+      volumes:
+        - ./frontend/app:/usr/src/frontend/app
+        - node_modules:/usr/src/frontend/app/node_modules
+        - ./backend/src:/usr/src/backend/src
+      networks:
+        - network
+      depends_on:
+        - frontend
+        - backend
+
+
+
+networks:
+    network:
+
+volumes:
+    database:
+    node_modules:

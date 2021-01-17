@@ -1,0 +1,7 @@
+django
+djangorestframework
+django-filter
+django-rest-auth
+django-mysql
+gunicorn
+mysqlclient
