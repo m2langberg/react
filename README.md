@@ -13,11 +13,11 @@ The subdirecories are:
 
 Before you do a docker-compose build, you need to set the following environment variables:
 
-UID: Linux user id
-GID: Linux group id 
-GROUP: Linux group name
-USER: Linux user name
-DISPLAY: If you are using the editor container, set this to get it to display
+    UID: Linux user id
+    GID: Linux group id 
+    GROUP: Linux group name
+    USER: Linux user name
+    DISPLAY: If you are using the editor container, set this to get it to display
 
 After build you need to initialize the backend:
 
