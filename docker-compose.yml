@@ -26,8 +26,6 @@ services:
       command: yarn start
       environment:
         - CHOKIDAR_USEPOLLING=true
-        - ELECTRON_GET_USE_PROXY=true
-        - GLOBAL_AGENT_HTTPS_PROXY=http://hgweb2:8888
       volumes:
         - ./frontend/app:/usr/src/app
         - node_modules:/usr/src/app/node_modules
