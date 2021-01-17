@@ -62,7 +62,7 @@ class Center extends React.Component<CenterProps, CenterState> {
 
     componentDidMount() {
         const h = projectService.getAll({});
-        h.ready.then(({ results }) => { debugger; this.setState({ projects: results }) })
+        h.ready.then(({ results }) => this.setState({ projects: results }))
     }
 
     componentDidUpdate(prevProps: CenterProps, prevState: CenterState) {
