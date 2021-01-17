@@ -18,6 +18,16 @@ Before you do a docker-compose build, you need to set the following environment 
     GROUP: Linux group name
     USER: Linux user name
     DISPLAY: If you are using the editor container, set this to get it to display
+    
+Here is an example .env file:
+
+```
+USER=username
+GROUP=groupname
+UID=1000
+GID=1000
+DISPLAY=
+```
 
 After build you need to initialize the backend:
 
